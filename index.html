@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscar Canción por Fecha</title>
+</head>
+<body>
+  <h1>Buscar Canción por Fecha</h1>
+  <p>La canción de hoy es: <span id="result">Cargando...</span></p>
+
+  <script>
+    // Función para obtener la canción según la fecha
+    async function getSongByDate(today) {
+      try {
+        // Ruta al archivo JSON (asegúrate de que esté en el mismo repositorio)
+        const response = await fetch('songs.json');
+        
+        // Verificar si la respuesta es exitosa
+        if (!response.ok) {
+          throw new Error(`Error al cargar el archivo JSON: ${response.status}`);
+        }
+
+        // Parsear el JSON
+        const songs = await response.json();
+
+        // Buscar la canción correspondiente a la fecha
+        const song = songs.find(item => item.date === today);
+
+        // Retornar la canción encontrada o un mensaje si no se encuentra
+        return song ? song.song : 'No hay canción para esta fecha';
+      } catch (error) {
+        console.error('Ocurrió un error:', error);
+        return 'Error al cargar las canciones';
+      }
+    }
+
+    // Obtener la fecha de hoy en formato YYYY-MM-DD
+    const today = new Date().toISOString().split('T')[0];
+
+    // Llamar a la función y mostrar el resultado en la página
+    getSongByDate(today).then(song => {
+      document.getElementById('result').textContent = song;
+    });
+  </script>
+</body>
+</html>
